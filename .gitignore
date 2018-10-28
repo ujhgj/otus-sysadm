@@ -1,0 +1,3 @@
+# Vagrant artefacts
+.vagrant
+*.vdi
