@@ -46,11 +46,12 @@ fi
 if [[ "$remembered_last_line" == "" ]]; then
     start_from=1
 else
-    buf=`grep -Fn "$remembered_last_line" "$log_file"`
-    if [[ "$buf" == "" ]]; then
+    # находим запомненную строчку: начнём обработку файла с неё
+    remembered_line_with_num=`grep -Fn "$remembered_last_line" "$log_file"`
+    if [[ "$remembered_line_with_num" == "" ]]; then
         start_from=1
     else
-        start_from=`echo $buf | awk -F":" '{print $1}'`
+        start_from=`echo $remembered_line_with_num | awk -F":" '{print $1}'`
         ((start_from++))
 
         # считаем, что отчет формируется с даты, указанной в этой строке
