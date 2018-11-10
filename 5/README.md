@@ -13,3 +13,4 @@
 
 Результат:
 - [скрипт](nginx_stats.sh)
+- [пример crontab](crontab)

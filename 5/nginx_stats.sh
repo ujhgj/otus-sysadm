@@ -117,14 +117,3 @@ fi
 # release lock
 rm -f $lock_file
 trap - INT TERM EXIT
-
-
-
-
-
-
-
-
-
-
-
