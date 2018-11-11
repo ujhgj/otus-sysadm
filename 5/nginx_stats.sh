@@ -2,18 +2,10 @@
 
 readonly X=10
 readonly Y=10
-declare -A ip_stats
-declare -A url_stats
-declare -A http_code_stats
-declare -a errors
 readonly remembered_last_line_file=./remembered_last_line.txt
 readonly log_file=./access.log
-last_line=""
 
 
-function extract_http_code() {
-    echo "$1" | awk -F" " '{print $9}'
-}
 function extract_ip() {
     echo "$1" | awk -F" " '{print $1}'
 }
@@ -22,6 +14,14 @@ function extract_url() {
 }
 function extract_date() {
     echo "$1" | awk -F" " '{print $4}' | sed s/[][]//g
+}
+function extract_http_code() {
+    http_code=`echo "$1" | awk -F" " '{print $9}'`
+    [[ ! "$http_code" =~ ^[1-5][0-9][0-9]$ ]] && ( \
+        >&2 \
+        echo "ERROR: Could not extract http_code from:" $'\n' "$line" \
+    )
+    echo "$http_code"
 }
 function tail_from_line() {
     tail -n +"$1" "$2"
@@ -60,14 +60,21 @@ else
 fi
 
 # обрабатываем файл, начиная с последней обработанной в прошлый раз строчки
+declare -A ip_stats
+declare -A url_stats
+declare -A http_code_stats
+declare -a errors
+last_line=""
 while IFS='' read -r line || [[ -n "$line" ]]
 do
-    # если начальной даты диапазона мы пока не имеем, то берём дату первой обрабатываемой строки
+    # если начальной даты временнОго диапазона нашего отчета мы пока не имеем,
+    # то берём дату первой обрабатываемой строки,
     if [[ "$report_date" == "" ]]; then
         report_date=`extract_date "$line"`
     fi
 
     http_code=`extract_http_code "$line"`
+
     [[ "$http_code" -ge 500 ]] && errors+=("$line")
     ((http_code_stats["$http_code"]++))
 
@@ -81,32 +88,32 @@ do
 done < <(tail_from_line $start_from "$log_file")
 
 
-echo "Report since $report_date"
+echo -e "\e[1mReport since $report_date\e[0m"
 echo ""
 
-echo "Most requests from IPs:"
+echo "======> Most requests from IPs:"
 for ip in "${!ip_stats[@]}"
 do
     echo "$ip ${ip_stats[$ip]}"
 done | sort -rnk2 | awk -F" " '{print $1 " (" $2 " requests)"}' | head -n$X
 echo ""
 
-echo "Most popular urls:"
+echo "======> Most popular urls:"
 for url in "${!url_stats[@]}"
 do
     echo "$url ${url_stats[$url]}"
 done | sort -rnk2 | awk -F" " '{print $1 " (" $2 " requests)"}' | head -n$Y
 echo ""
 
-echo "Errors:"
-IFS=$'\n'; echo "${errors[*]}"
-echo ""
-
-echo "HTTP codes:"
+echo "======> HTTP codes:"
 for http_code in "${!http_code_stats[@]}"
 do
     echo "$http_code: ${http_code_stats[$http_code]} times"
 done
+echo ""
+
+echo "======> Errors:"
+IFS=$'\n'; echo "${errors[*]}"
 
 
 # запоминаем последнюю обработанную строчку
