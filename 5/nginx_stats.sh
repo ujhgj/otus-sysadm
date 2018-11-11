@@ -74,7 +74,6 @@ do
     fi
 
     http_code=`extract_http_code "$line"`
-
     [[ "$http_code" -ge 500 ]] && errors+=("$line")
     ((http_code_stats["$http_code"]++))
 
