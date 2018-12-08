@@ -1,0 +1,12 @@
+[vagrant@otuslinux ionice]$ ./compare.sh
+[vagrant@otuslinux ionice]$ ionice: ignoring given class data for idle class
+
+real    0m14.669s
+user    0m0.043s
+sys     0m3.640s
+Not nice scan complete ...
+
+real    0m16.373s
+user    0m0.035s
+sys     0m4.124s
+Nice scan complete!
