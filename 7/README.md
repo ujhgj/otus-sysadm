@@ -5,7 +5,7 @@ PAM
 1. Запретить всем пользователям, кроме группы admin логин в выходные и праздничные дни
 
 Результат:
-- скрипт проверки возможности логина [/etc/pam_script_auth](holiday_denial/etc/pam_script_auth)
+- скрипт проверки условий доступа [/etc/pam_script_auth](holiday_denial/etc/pam_script_auth)
 - вспомогательный скрипт для определения выходного дня [/usr/bin/today_is_holiday](holiday_denial/usr/bin/today_is_holiday)
 (требуется python пакет workalendar)
 - конфигурация [/etc/pam.d/login](holiday_denial/etc/pam.d/login)
