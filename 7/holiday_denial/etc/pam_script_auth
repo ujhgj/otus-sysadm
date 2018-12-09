@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+function user_in_admin_group() {
+    for item in `groups $PAM_USER`; do
+        if [[ "admin" == "$item" ]]; then
+            echo "True"
+            return 0
+        fi
+    done
+    echo "False"
+}
+
+if [[ `user_in_admin_group` == "False" && `today_is_holiday` == "True" ]]; then
+    echo "Login at holidays allowed only for users from 'admin' group"
+    exit 1
+fi

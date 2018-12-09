@@ -1,0 +1,9 @@
+#!/usr/bin/python
+
+import datetime
+from workalendar.europe import Russia
+
+cal = Russia()
+cal.holidays(2018)
+
+print (not cal.is_working_day(datetime.date.today()))
