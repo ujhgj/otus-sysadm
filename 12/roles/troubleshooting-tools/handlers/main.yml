@@ -1,0 +1,5 @@
+---
+- name: Restart atop
+  service:
+    name: atop
+    state: restarted

@@ -1,0 +1,5 @@
+---
+- hosts: otuslinux
+  become: yes
+  roles:
+  - { role: troubleshooting-tools }
