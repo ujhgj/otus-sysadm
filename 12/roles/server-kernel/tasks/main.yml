@@ -1,0 +1,7 @@
+---
+- name: Sysctl config file
+  template:
+    src: sysctl.conf.j2
+    dest: /etc/sysctl.conf
+    backup: yes
+  notify: Restart systemd-sysctl service
